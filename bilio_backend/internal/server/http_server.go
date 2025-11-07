@@ -14,8 +14,9 @@ import (
 )
 
 type HTTPServer struct {
-	server *http.Server
-	log    zerolog.Logger
+	server          *http.Server
+	log             zerolog.Logger
+	shutdownTimeout time.Duration
 }
 
 func NewHTTPServer(cfg *config.Config, log zerolog.Logger, prisma *database.PrismaClient) *HTTPServer {
@@ -29,7 +30,11 @@ func NewHTTPServer(cfg *config.Config, log zerolog.Logger, prisma *database.Pris
 		IdleTimeout:  cfg.Server.IdleTimeout,
 	}
 
-	return &HTTPServer{server: srv, log: log}
+	return &HTTPServer{
+		server:          srv,
+		log:             log,
+		shutdownTimeout: cfg.Server.ShutdownTimeout,
+	}
 }
 
 func (s *HTTPServer) Start() error {
@@ -44,9 +49,15 @@ func (s *HTTPServer) Start() error {
 
 func (s *HTTPServer) Stop() error {
 	s.log.Info().Msg("http server shutting down")
+	s.server.SetKeepAlivesEnabled(false)
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), s.shutdownTimeout)
 	defer cancel()
 
-	return s.server.Shutdown(ctx)
+	if err := s.server.Shutdown(ctx); err != nil {
+		return err
+	}
+
+	s.log.Info().Msg("http server shutdown complete")
+	return nil
 }

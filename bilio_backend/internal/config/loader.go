@@ -14,9 +14,10 @@ type Config struct {
 		Port int
 	}
 	Server struct {
-		ReadTimeout  time.Duration
-		WriteTimeout time.Duration
-		IdleTimeout  time.Duration
+		ReadTimeout     time.Duration
+		WriteTimeout    time.Duration
+		IdleTimeout     time.Duration
+		ShutdownTimeout time.Duration
 	}
 	Database struct {
 		URL string
@@ -39,10 +40,10 @@ func Load() (*Config, error) {
 		return nil, fmt.Errorf("read config: %w", err)
 	}
 
-	// Timeouts as strings in config
 	v.SetDefault("server.readtimeout", "5s")
 	v.SetDefault("server.writetimeout", "10s")
 	v.SetDefault("server.idletimeout", "120s")
+	v.SetDefault("server.shutdowntimeout", "15s")
 
 	var cfg Config
 	if err := v.Unmarshal(&cfg); err != nil {
