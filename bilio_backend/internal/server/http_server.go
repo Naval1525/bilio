@@ -1,0 +1,52 @@
+package server
+
+import (
+	"context"
+	"fmt"
+	"net/http"
+	"time"
+
+	"github.com/rs/zerolog"
+
+	"github.com/nava1525/bilio-backend/internal/app/transport"
+	"github.com/nava1525/bilio-backend/internal/config"
+	"github.com/nava1525/bilio-backend/internal/database"
+)
+
+type HTTPServer struct {
+	server *http.Server
+	log    zerolog.Logger
+}
+
+func NewHTTPServer(cfg *config.Config, log zerolog.Logger, prisma *database.PrismaClient) *HTTPServer {
+	router := transport.NewRouter(log, prisma)
+
+	srv := &http.Server{
+		Addr:         fmt.Sprintf(":%d", cfg.App.Port),
+		Handler:      router,
+		ReadTimeout:  cfg.Server.ReadTimeout,
+		WriteTimeout: cfg.Server.WriteTimeout,
+		IdleTimeout:  cfg.Server.IdleTimeout,
+	}
+
+	return &HTTPServer{server: srv, log: log}
+}
+
+func (s *HTTPServer) Start() error {
+	s.log.Info().Str("addr", s.server.Addr).Msg("http server starting")
+
+	if err := s.server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		return err
+	}
+
+	return nil
+}
+
+func (s *HTTPServer) Stop() error {
+	s.log.Info().Msg("http server shutting down")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	return s.server.Shutdown(ctx)
+}
