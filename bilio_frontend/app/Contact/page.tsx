@@ -57,11 +57,7 @@ export const metadata: Metadata = {
 const ContactPage = () => {
   return (
     <main className="relative flex w-full justify-center overflow-hidden bg-background">
-      <div className="pointer-events-none absolute inset-0 mx-auto max-w-6xl opacity-60 blur-3xl">
-        <div className="absolute left-[10%] top-[-12%] h-64 w-64 rounded-full bg-primary/15" />
-        <div className="absolute right-[5%] top-[20%] h-80 w-80 rounded-full bg-sky-500/10" />
-        <div className="absolute bottom-[-20%] left-[30%] h-72 w-72 rounded-full bg-purple-500/10" />
-      </div>
+      
 
       <div className="relative z-10 w-full max-w-5xl space-y-16 px-4 py-16 md:px-8 md:py-20">
         <section className="space-y-6 text-center">
