@@ -1,8 +1,8 @@
-import { AppSidebar } from "@/components/app-sidebar"
-import { ChartAreaInteractive } from "@/components/chart-area-interactive"
-import { DataTable } from "@/components/data-table"
-import { SectionCards } from "@/components/section-cards"
-import { SiteHeader } from "@/components/site-header"
+import { AppSidebar } from "@/components/Dashboard/app-sidebar"
+import { ChartAreaInteractive } from "@/components/Dashboard/chart-area-interactive"
+import { DataTable } from "@/components/Dashboard/data-table"
+import { SectionCards } from "@/components/Dashboard/section-cards"
+import { SiteHeader } from "@/components/Dashboard/site-header"
 import {
   SidebarInset,
   SidebarProvider,
@@ -35,8 +35,8 @@ export default function Dashboard() {
           height: 100% !important;
         }
       `}} />
-      <div className="flex items-center justify-center min-h-screen p-4 md:p-8">
-        <div className="w-full max-w-[1200px] bg-background rounded-t-lg shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden border border-border mac-window-container">
+      <div className="flex items-center justify-center  min-h-screen p-4 md:p-8">
+        <div className="w-full max-w-[1200px] rounded-lg shadow-lg shadow-black/20 dark:shadow-white/20 overflow-hidden border border-border mac-window-container">
           {/* macOS Window Frame */}
           <div className="bg-background px-4 py-2.5 flex items-center gap-2.5 border-b border-border">
             {/* Traffic Light Buttons */}
@@ -47,7 +47,7 @@ export default function Dashboard() {
             </div>
             {/* Window Title */}
             <div className="flex-1 text-center">
-              <span className="text-xs text-foreground font-medium">Dashboard — BillStack</span>
+              <span className="text-xs text-foreground font-medium">Dashboard — Bilio</span>
             </div>
             {/* Spacer for symmetry */}
             <div className="w-[52px]"></div>

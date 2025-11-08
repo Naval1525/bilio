@@ -16,10 +16,10 @@ import {
   IconUsers,
 } from "@tabler/icons-react"
 
-import { NavDocuments } from "@/components/nav-documents"
-import { NavMain } from "@/components/nav-main"
-import { NavSecondary } from "@/components/nav-secondary"
-import { NavUser } from "@/components/nav-user"
+import { NavDocuments } from "@/components/Dashboard/nav-documents"
+import { NavMain } from "@/components/Dashboard/nav-main"
+import { NavSecondary } from "@/components/Dashboard/nav-secondary"
+import { NavUser } from "@/components/Dashboard/nav-user"
 import {
   Sidebar,
   SidebarContent,
@@ -167,7 +167,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             >
               <a href="#">
                 <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">BillStack</span>
+                <span className="text-base font-semibold">Bilio</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>

@@ -4,7 +4,7 @@ import { Input } from '../ui/input'
 
 const Hero = () => {
   return (
-    <div className="w-full min-h-[50vh] flex items-center justify-center px-4 py-8 bg-linear-to-b from-background to-muted/20">
+    <div className="w-full min-h-[50vh] flex items-center justify-center px-4 py-8 bg-background">
       <div className="max-w-4xl mx-auto text-center space-y-6">
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-foreground">
         Simplify Your Billing. Amplify Your Business.
