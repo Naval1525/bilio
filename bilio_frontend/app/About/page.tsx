@@ -70,10 +70,7 @@ export const metadata: Metadata = {
 const AboutPage = () => {
   return (
     <main className="relative flex w-full justify-center overflow-hidden bg-background">
-      <div className="pointer-events-none absolute inset-0 mx-auto max-w-6xl opacity-60 blur-3xl">
-        <div className="absolute left-1/2 top-[-10%] h-64 w-64 -translate-x-1/2 rounded-full bg-primary/20" />
-        <div className="absolute bottom-[-20%] right-[15%] h-80 w-80 rounded-full bg-purple-500/10" />
-      </div>
+      
       <div className="relative z-10 w-full max-w-5xl space-y-16 px-4 py-16 md:px-8 md:py-20">
         <section className="space-y-6 text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/80 px-4 py-2 text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground backdrop-blur transition-colors duration-300 hover:border-border">
