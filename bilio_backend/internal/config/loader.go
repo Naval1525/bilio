@@ -15,6 +15,9 @@ type Config struct {
 		Env  string
 		Port int
 	}
+	CORS struct {
+		AllowedOrigins []string
+	}
 	Server struct {
 		ReadTimeout     time.Duration
 		WriteTimeout    time.Duration
@@ -49,6 +52,8 @@ func Load() (*Config, error) {
 	v.SetDefault("app.env", "development")
 	v.SetDefault("app.port", 8080)
 
+	v.SetDefault("cors.allowed_origins", []string{"http://localhost:3000"})
+
 	v.SetDefault("server.readtimeout", "5s")
 	v.SetDefault("server.writetimeout", "10s")
 	v.SetDefault("server.idletimeout", "120s")
@@ -65,12 +70,13 @@ func Load() (*Config, error) {
 	v.SetDefault("email.smtp.password", "")
 
 	bindings := map[string]string{
-		"app.env":             "APP_ENV",
-		"app.port":            "APP_PORT",
-		"database.url":        "DATABASE_URL",
-		"email.from":          "APP_EMAIL_FROM",
-		"email.smtp.username": "EMAIL_USER",
-		"email.smtp.password": "EMAIL_PASSWORD",
+		"app.env":              "APP_ENV",
+		"app.port":             "APP_PORT",
+		"cors.allowed_origins": "APP_CORS_ALLOWED_ORIGINS",
+		"database.url":         "DATABASE_URL",
+		"email.from":           "APP_EMAIL_FROM",
+		"email.smtp.username":  "EMAIL_USER",
+		"email.smtp.password":  "EMAIL_PASSWORD",
 	}
 	for key, env := range bindings {
 		if err := v.BindEnv(key, env); err != nil {
@@ -93,6 +99,13 @@ func Load() (*Config, error) {
 		cfg.Email.From = envFrom
 	}
 
+	if origins := os.Getenv("APP_CORS_ALLOWED_ORIGINS"); origins != "" {
+		cfg.CORS.AllowedOrigins = parseCSV(origins)
+	}
+	if len(cfg.CORS.AllowedOrigins) == 0 {
+		cfg.CORS.AllowedOrigins = []string{"http://localhost:3000"}
+	}
+
 	if cfg.Email.From == "" {
 		cfg.Email.From = cfg.Email.SMTP.Username
 	}
@@ -111,4 +124,16 @@ func Load() (*Config, error) {
 	}
 
 	return &cfg, nil
+}
+
+func parseCSV(value string) []string {
+	parts := strings.Split(value, ",")
+	result := make([]string, 0, len(parts))
+	for _, part := range parts {
+		trimmed := strings.TrimSpace(part)
+		if trimmed != "" {
+			result = append(result, trimmed)
+		}
+	}
+	return result
 }
