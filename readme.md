@@ -178,6 +178,6 @@ npm run dev
 - Twitter: [@biliohq](https://twitter.com/biliohq)
 - Discord: invite pending
 
----
+--
 
 Built with ❤️ for agencies and freelancers who deserve better financial tools. Let us know how Bilio can help your business thrive.
