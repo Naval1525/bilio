@@ -2,10 +2,12 @@ package repositories
 
 import (
 	"context"
+	"database/sql"
+	"time"
+
+	"github.com/google/uuid"
 
 	"github.com/nava1525/bilio-backend/internal/app/models"
-	"github.com/nava1525/bilio-backend/internal/database"
-	"github.com/nava1525/bilio-backend/prisma/client"
 )
 
 type UserRepository interface {
@@ -13,43 +15,52 @@ type UserRepository interface {
 	Create(ctx context.Context, user *models.User) (*models.User, error)
 }
 
-type prismaUserRepository struct {
-	client *database.PrismaClient
+type postgresUserRepository struct {
+	db *sql.DB
 }
 
-func NewUserRepository(client *database.PrismaClient) UserRepository {
-	return &prismaUserRepository{client: client}
+func NewUserRepository(db *sql.DB) UserRepository {
+	return &postgresUserRepository{db: db}
 }
 
-func (r *prismaUserRepository) List(ctx context.Context) ([]models.User, error) {
-	records, err := r.client.User.FindMany().Exec(ctx)
+func (r *postgresUserRepository) List(ctx context.Context) ([]models.User, error) {
+	rows, err := r.db.QueryContext(ctx, `SELECT id, email, COALESCE(name, '') FROM users ORDER BY created_at DESC`)
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
-	users := make([]models.User, len(records))
-	for i, rec := range records {
-		users[i] = models.User{
-			ID:    rec.ID,
-			Email: rec.Email,
-			Name:  rec.Name,
+	var users []models.User
+	for rows.Next() {
+		var user models.User
+		if err := rows.Scan(&user.ID, &user.Email, &user.Name); err != nil {
+			return nil, err
 		}
+		users = append(users, user)
 	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
 	return users, nil
 }
 
-func (r *prismaUserRepository) Create(ctx context.Context, user *models.User) (*models.User, error) {
-	created, err := r.client.User.CreateOne(
-		client.User.Email.Set(user.Email),
-		client.User.Name.Set(user.Name),
-	).Exec(ctx)
+func (r *postgresUserRepository) Create(ctx context.Context, user *models.User) (*models.User, error) {
+	id := uuid.NewString()
+	now := time.Now().UTC()
+
+	_, err := r.db.ExecContext(ctx,
+		`INSERT INTO users (id, email, name, created_at, updated_at) VALUES ($1, $2, $3, $4, $4)`,
+		id, user.Email, user.Name, now,
+	)
 	if err != nil {
 		return nil, err
 	}
 
 	return &models.User{
-		ID:    created.ID,
-		Email: created.Email,
-		Name:  created.Name,
+		ID:    id,
+		Email: user.Email,
+		Name:  user.Name,
 	}, nil
 }

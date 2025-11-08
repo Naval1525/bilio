@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"net/http"
 	"time"
@@ -10,7 +11,6 @@ import (
 
 	"github.com/nava1525/bilio-backend/internal/app/transport"
 	"github.com/nava1525/bilio-backend/internal/config"
-	"github.com/nava1525/bilio-backend/internal/database"
 )
 
 type HTTPServer struct {
@@ -19,8 +19,11 @@ type HTTPServer struct {
 	shutdownTimeout time.Duration
 }
 
-func NewHTTPServer(cfg *config.Config, log zerolog.Logger, prisma *database.PrismaClient) *HTTPServer {
-	router := transport.NewRouter(log, prisma)
+func NewHTTPServer(cfg *config.Config, log zerolog.Logger, db *sql.DB) (*HTTPServer, error) {
+	router, err := transport.NewRouter(cfg, log, db)
+	if err != nil {
+		return nil, err
+	}
 
 	srv := &http.Server{
 		Addr:         fmt.Sprintf(":%d", cfg.App.Port),
@@ -34,7 +37,7 @@ func NewHTTPServer(cfg *config.Config, log zerolog.Logger, prisma *database.Pris
 		server:          srv,
 		log:             log,
 		shutdownTimeout: cfg.Server.ShutdownTimeout,
-	}
+	}, nil
 }
 
 func (s *HTTPServer) Start() error {

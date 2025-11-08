@@ -16,7 +16,9 @@ import (
 )
 
 func main() {
-	_ = godotenv.Load()
+	_ = godotenv.Load(".env")
+	_ = godotenv.Load("../.env")
+	_ = godotenv.Load("../../.env")
 
 	cfg, err := config.Load()
 	if err != nil {
@@ -25,13 +27,16 @@ func main() {
 
 	logProvider := logger.New(cfg.Logging.Level)
 
-	prismaClient, err := database.NewClient(cfg.Database.URL)
+	dbClient, err := database.NewClient(cfg.Database.URL)
 	if err != nil {
-		logProvider.Fatal().Err(err).Msg("failed to initialize prisma client")
+		logProvider.Fatal().Err(err).Msg("failed to initialize database client")
 	}
-	defer prismaClient.Disconnect()
+	defer dbClient.Disconnect()
 
-	srv := server.NewHTTPServer(cfg, logProvider, prismaClient)
+	srv, err := server.NewHTTPServer(cfg, logProvider, dbClient.DB())
+	if err != nil {
+		logProvider.Fatal().Err(err).Msg("failed to initialize http server")
+	}
 
 	shutdownCtx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
