@@ -1,6 +1,6 @@
 # Bilio Backend
 
-A starter Go backend with Prisma ORM integration, organized for clean architecture and ready for containerization or deployment.
+A starter Go backend with a lightweight PostgreSQL data layer, organized for clean architecture and ready for containerization or deployment.
 
 ## Getting Started
 
@@ -13,18 +13,15 @@ A starter Go backend with Prisma ORM integration, organized for clean architectu
    ```bash
    cp .env.example .env
    ```
+   Configure `DATABASE_URL`, `EMAIL_USER`, and `EMAIL_PASSWORD` for your SMTP provider (e.g. Gmail, SendGrid).
 
-3. **Generate Prisma client**
-   ```bash
-   npx prisma generate
-   ```
-
-4. **Run database migrations**
+3. **Run database migrations (optional)**
+   The server automatically ensures required tables exist on startup. If you prefer to run the SQL ahead of time, execute:
    ```bash
    ./scripts/migrate.sh
    ```
 
-5. **Start the development server**
+4. **Start the development server**
    ```bash
    ./scripts/dev.sh
    ```
@@ -34,16 +31,32 @@ A starter Go backend with Prisma ORM integration, organized for clean architectu
 - `cmd/server` — application entrypoint
 - `internal/app` — domain-specific logic (handlers, services, repositories, models)
 - `internal/config` — configuration loading
-- `internal/database` — Prisma client bootstrap and migrations
+- `internal/database` — PostgreSQL client bootstrap and schema helpers
 - `internal/logger` — structured logging
 - `internal/server` — HTTP server wiring
+- `pkg/mailer` — outbound email integrations
 - `pkg/middleware` — reusable middleware
-- `prisma` — Prisma schema and seeding logic
-- `scripts` — helper scripts for development and migrations
+- `scripts` — helper scripts for development and tooling
 
-## Prisma
+## Database
 
-This project expects Prisma CLI installed locally (via `npm install -g prisma` or `npx prisma`). Ensure your `DATABASE_URL` points to a supported database. For local development, you can use PostgreSQL, MySQL, or SQLite. Update `prisma/schema.prisma` accordingly.
+The application connects to PostgreSQL using the `pgx` driver. Connection details come from `DATABASE_URL` (defaulting to `postgresql://user:password@localhost:5432/bilio`).
+
+On startup the service will ensure the `users` and `waitlist_entries` tables exist. For production workloads you should manage migrations explicitly (e.g. via Goose, Flyway, or another tool) and disable automatic schema creation.
+
+## Email
+
+The service sends waitlist emails through SMTP. Provide credentials via the following environment variables:
+
+- `EMAIL_USER` — SMTP username/login
+- `EMAIL_PASSWORD` — SMTP password or app-specific token
+- `APP_EMAIL_FROM` (optional) — overrides the default `waitlist@billstack.com`
+
+If these variables are missing the server will fail to boot.
+
+## Hot Reloading
+
+This project ships with an `.air.toml` configuration for [Air](https://github.com/air-verse/air). Install Air (e.g. `go install github.com/air-verse/air@latest`) and run `./scripts/dev.sh` to start the server with automatic reloads.
 
 ## Next Steps
 
@@ -51,7 +64,3 @@ This project expects Prisma CLI installed locally (via `npm install -g prisma` o
 - Add request validation, authentication, and testing.
 - Containerize the service or integrate with CI/CD.
 
-
-### Hot Reloading
-
-This project ships with an `.air.toml` configuration for [Air](https://github.com/air-verse/air). Install Air (e.g. `go install github.com/air-verse/air@latest`) and run `./scripts/dev.sh` to start the server with automatic reloads.
