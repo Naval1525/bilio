@@ -92,7 +92,7 @@ const ContactPage = () => {
 
           <div className="grid content-start gap-6">
             <Card className="h-fit border-border/60 bg-card/80 backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:border-border/70 hover:shadow-xl">
-              <CardHeader className="space-y-2">
+              <CardHeader >
                 <CardTitle className="text-xl text-foreground">Ways to reach us</CardTitle>
                 <CardDescription className="text-sm text-muted-foreground">
                   Pick the channel that fits best—we keep replies focused and fast.
@@ -120,18 +120,18 @@ const ContactPage = () => {
             </Card>
 
             <Card className="h-fit border-border/60 bg-card/80 backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:border-border/70 hover:shadow-xl">
-              <CardHeader className="space-y-4">
+              <CardHeader>
                 <CardTitle className="text-xl text-foreground">Follow our product drops</CardTitle>
                 <CardDescription className="text-sm text-muted-foreground">
                   Stay in the loop with product walkthroughs and release notes.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="grid gap-4 p-6">
+              <CardContent className="grid gap-2 p-3.5">
                 {socialLinks.map(({ label, handle, href, icon: Icon }) => (
                   <Button
                     key={label}
                     variant="ghost"
-                    className="group flex w-full items-center justify-between rounded-xl border border-transparent bg-background/40 px-4 py-2.5 text-left text-sm font-medium text-foreground transition hover:border-border/60 hover:bg-background/70"
+                    className="group flex w-full items-center justify-between rounded-xl border border-transparent bg-background/40 p-6 text-left text-sm font-medium text-foreground transition hover:border-border/60 hover:bg-background/70"
                     asChild
                   >
                     <a href={href} target="_blank" rel="noreferrer noopener">
