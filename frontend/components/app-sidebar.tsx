@@ -2,14 +2,11 @@
 
 import * as React from "react"
 import {
-  IconCamera,
   IconChartBar,
   IconDashboard,
   IconDatabase,
-  IconFileAi,
   IconFileDescription,
   IconFileWord,
-  IconFolder,
   IconHelp,
   IconInnerShadowTop,
   IconListDetails,
@@ -35,8 +32,8 @@ import {
 
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
+    name: "John Doe",
+    email: "john@example.com",
     avatar: "/avatars/shadcn.jpg",
   },
   navMain: [
@@ -46,69 +43,77 @@ const data = {
       icon: IconDashboard,
     },
     {
-      title: "Lifecycle",
+      title: "Invoices",
+      url: "#",
+      icon: IconFileDescription,
+    },
+    {
+      title: "Expenses",
       url: "#",
       icon: IconListDetails,
     },
     {
-      title: "Analytics",
-      url: "#",
-      icon: IconChartBar,
-    },
-    {
-      title: "Projects",
-      url: "#",
-      icon: IconFolder,
-    },
-    {
-      title: "Team",
+      title: "Clients",
       url: "#",
       icon: IconUsers,
+    },
+    {
+      title: "Reports",
+      url: "#",
+      icon: IconChartBar,
     },
   ],
   navClouds: [
     {
-      title: "Capture",
-      icon: IconCamera,
+      title: "Invoices",
+      icon: IconFileDescription,
       isActive: true,
       url: "#",
       items: [
         {
-          title: "Active Proposals",
+          title: "All Invoices",
           url: "#",
         },
         {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Proposal",
-      icon: IconFileDescription,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
+          title: "Pending",
           url: "#",
         },
         {
-          title: "Archived",
+          title: "Paid",
+          url: "#",
+        },
+        {
+          title: "Overdue",
           url: "#",
         },
       ],
     },
     {
-      title: "Prompts",
-      icon: IconFileAi,
+      title: "Recurring",
+      icon: IconFileWord,
       url: "#",
       items: [
         {
-          title: "Active Proposals",
+          title: "Active Recurring",
           url: "#",
         },
         {
-          title: "Archived",
+          title: "Draft",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Expenses",
+      icon: IconListDetails,
+      url: "#",
+      items: [
+        {
+          title: "All Expenses",
+          url: "#",
+        },
+        {
+          title: "By Category",
           url: "#",
         },
       ],
@@ -133,19 +138,19 @@ const data = {
   ],
   documents: [
     {
-      name: "Data Library",
-      url: "#",
-      icon: IconDatabase,
-    },
-    {
-      name: "Reports",
+      name: "Tax Reports",
       url: "#",
       icon: IconReport,
     },
     {
-      name: "Word Assistant",
+      name: "Financial Summary",
       url: "#",
-      icon: IconFileWord,
+      icon: IconChartBar,
+    },
+    {
+      name: "Client Portal",
+      url: "#",
+      icon: IconDatabase,
     },
   ],
 }
@@ -162,7 +167,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             >
               <a href="#">
                 <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">Acme Inc.</span>
+                <span className="text-base font-semibold">BillStack</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>

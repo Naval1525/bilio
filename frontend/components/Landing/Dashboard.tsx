@@ -35,10 +35,10 @@ export default function Dashboard() {
           height: 100% !important;
         }
       `}} />
-      <div className="flex items-center justify-center min-h-screen bg-[linear-gradient(to_bottom_right,#e5e7eb,#d1d5db)] dark:bg-[linear-gradient(to_bottom_right,#111827,#1f2937)] p-4 md:p-8">
-        <div className="w-full max-w-[1400px] bg-white dark:bg-gray-800 rounded-t-lg shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden border border-gray-300 dark:border-gray-600 mac-window-container">
+      <div className="flex items-center justify-center min-h-screen p-4 md:p-8">
+        <div className="w-full max-w-[1200px] bg-background rounded-t-lg shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden border border-border mac-window-container">
           {/* macOS Window Frame */}
-          <div className="bg-[#e8e8e8] dark:bg-gray-700 px-4 py-2.5 flex items-center gap-2.5 border-b border-gray-300 dark:border-gray-600">
+          <div className="bg-background px-4 py-2.5 flex items-center gap-2.5 border-b border-border">
             {/* Traffic Light Buttons */}
             <div className="flex gap-1.5">
               <div className="w-3 h-3 rounded-full bg-[#ff5f57] shadow-[inset_0_1px_1px_0_rgba(0,0,0,0.2)]"></div>
@@ -47,7 +47,7 @@ export default function Dashboard() {
             </div>
             {/* Window Title */}
             <div className="flex-1 text-center">
-              <span className="text-xs text-gray-700 dark:text-gray-300 font-medium">Dashboard — Bilio</span>
+              <span className="text-xs text-foreground font-medium">Dashboard — BillStack</span>
             </div>
             {/* Spacer for symmetry */}
             <div className="w-[52px]"></div>

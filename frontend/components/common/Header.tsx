@@ -4,6 +4,7 @@ import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 
+
 const Header = () => {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -11,9 +12,11 @@ const Header = () => {
     setMounted(true);
   }, []);
 
+
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
+
 
   return (
     <header className="w-full">
@@ -24,8 +27,9 @@ const Header = () => {
             <h1 className="text-4xl font-sans font-bold">Bilio</h1>
           </Link>
 
+
           {/* Navigation Links - Center */}
-          <nav className="hidden md:flex items-center space-x-12">
+          <nav className="hidden md:flex items-center space-x-12 ml-24">
             <Link
               href="/About"
               className="text-lg font-semibold hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
@@ -40,11 +44,13 @@ const Header = () => {
             </Link>
           </nav>
 
+
           {/* Right Side - Button and Theme Toggle */}
           <div className="flex items-center space-x-4">
             <button className="px-6 py-2.5 text-base font-medium text-white bg-black dark:bg-white dark:text-black rounded-md hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors">
               Join Waitlist
             </button>
+
 
             <button
               onClick={toggleTheme}
@@ -63,5 +69,6 @@ const Header = () => {
     </header>
   );
 };
+
 
 export default Header;
