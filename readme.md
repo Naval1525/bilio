@@ -2,6 +2,7 @@
 
 > Simplify billing, track expenses, and understand profitability—without drowning in spreadsheets.
 
+
 Bilio is a modern billing workspace for agencies and independent professionals. Create branded invoices, automate payment reminders, reconcile expenses, and surface actionable financial insights from a single dashboard.
 
 ## Table of Contents
@@ -78,6 +79,7 @@ cp backend/.env.example backend/.env
 cp frontend/.env.example frontend/.env.local
 
 # Option A: Docker Compose
+
 docker-compose up -d
 
 # Option B: Manual services
@@ -178,6 +180,6 @@ npm run dev
 - Twitter: [@biliohq](https://twitter.com/biliohq)
 - Discord: invite pending
 
----
+--
 
 Built with ❤️ for agencies and freelancers who deserve better financial tools. Let us know how Bilio can help your business thrive.
