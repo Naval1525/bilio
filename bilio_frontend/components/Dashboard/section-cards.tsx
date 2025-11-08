@@ -74,7 +74,7 @@ export function SectionCards() {
           <div className="line-clamp-1 flex gap-2 font-medium">
             Expenses tracked <IconTrendingUp className="size-4" />
           </div>
-          <div className="text-muted-foreground">This month's total expenses</div>
+          <div className="text-muted-foreground">{`This month's total expenses`}</div>
         </CardFooter>
       </Card>
       <Card className="@container/card">
