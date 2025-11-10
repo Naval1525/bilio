@@ -11,17 +11,20 @@ export type WaitlistJoinResponse = {
   message: string
 }
 
-export async function joinWaitlist(email: string): Promise<WaitlistJoinResponse> {
+export async function joinWaitlist(
+  email: string,
+  promocode?: string
+): Promise<WaitlistJoinResponse> {
   if (!BACKEND_URL) {
     throw new Error('Backend URL is not configured')
   }
 
-  const response = await fetch(`${BACKEND_URL}/api/v1/waitlist`, {
+  const response = await fetch(`${BACKEND_URL}/waitlist`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ email }),
+    body: JSON.stringify({ email, promocode }),
   })
 
   if (!response.ok) {

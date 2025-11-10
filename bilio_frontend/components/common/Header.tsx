@@ -3,10 +3,13 @@ import React, { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
+import WaitlistModal from "../WaitlistModal";
 
 const Header = () => {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -217,7 +220,10 @@ const Header = () => {
 
           {/* Right Side - Button and Theme Toggle */}
           <div className="flex items-center space-x-4">
-            <button className="px-6 py-2.5 text-base font-medium text-white bg-black dark:bg-white dark:text-black rounded-md hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors">
+            <button 
+              onClick={() => setIsModalOpen(true)}
+              className="px-6 py-2.5 text-base font-medium text-white bg-black dark:bg-white dark:text-black rounded-md hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+            >
               Join Waitlist
             </button>
 
@@ -235,6 +241,7 @@ const Header = () => {
           </div>
         </div>
       </div>
+      <WaitlistModal open={isModalOpen} onOpenChange={setIsModalOpen} />
     </header>
   );
 };
