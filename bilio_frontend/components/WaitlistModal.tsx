@@ -70,7 +70,7 @@ const WaitlistModal = ({ open, onOpenChange }: WaitlistModalProps) => {
       toast.success("Welcome email sent!", {
         description: response.message ?? "Thanks for joining the waitlist!",
       });
-      // Use requestAnimationFrame to ensure toast renders before closing
+      // Use requestAnimationFrame to ensure toast renders before closing.
       requestAnimationFrame(() => {
         onOpenChange(false);
       });
