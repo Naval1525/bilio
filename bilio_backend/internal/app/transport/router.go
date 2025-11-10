@@ -41,6 +41,7 @@ func NewRouter(cfg *config.Config, logger zerolog.Logger, db *sql.DB) (http.Hand
 	userHandler := appHandlers.NewUserHandler(userRepo)
 
 	waitlistRepo := appRepositories.NewWaitlistRepository(db)
+	promocodeRepo := appRepositories.NewPromocodeRepository(db)
 
 	if cfg.Email.SMTP.Username == "" || cfg.Email.SMTP.Password == "" {
 		return nil, fmt.Errorf("email smtp credentials missing; set EMAIL_USER and EMAIL_PASSWORD")
@@ -57,8 +58,11 @@ func NewRouter(cfg *config.Config, logger zerolog.Logger, db *sql.DB) (http.Hand
 		return nil, err
 	}
 
-	waitlistService := appServices.NewWaitlistService(waitlistRepo, mailer)
+	waitlistService := appServices.NewWaitlistService(waitlistRepo, promocodeRepo, mailer)
 	waitlistHandler := appHandlers.NewWaitlistHandler(waitlistService, logger)
+
+	promocodeService := appServices.NewPromocodeService(promocodeRepo)
+	promocodeHandler := appHandlers.NewPromocodeHandler(promocodeService, logger)
 
 	r.Get("/health", healthHandler.Check)
 
@@ -68,6 +72,7 @@ func NewRouter(cfg *config.Config, logger zerolog.Logger, db *sql.DB) (http.Hand
 			r.Post("/", userHandler.Create)
 		})
 
+		r.Get("/promocode", promocodeHandler.Generate)
 		r.Post("/waitlist", waitlistHandler.Join)
 	})
 

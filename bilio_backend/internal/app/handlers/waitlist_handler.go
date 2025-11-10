@@ -15,7 +15,8 @@ type WaitlistHandler struct {
 }
 
 type waitlistJoinRequest struct {
-	Email string `json:"email"`
+	Email     string `json:"email"`
+	Promocode string `json:"promocode,omitempty"`
 }
 
 func NewWaitlistHandler(service *services.WaitlistService, logger zerolog.Logger) *WaitlistHandler {
@@ -33,7 +34,8 @@ func (h *WaitlistHandler) Join(w http.ResponseWriter, r *http.Request) {
 	}
 
 	entry, err := h.service.Join(r.Context(), services.JoinWaitlistInput{
-		Email: req.Email,
+		Email:     req.Email,
+		Promocode: req.Promocode,
 	})
 	if err != nil {
 		if validationErr, ok := services.AsValidationError(err); ok {
