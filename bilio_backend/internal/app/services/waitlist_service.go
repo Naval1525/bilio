@@ -34,24 +34,44 @@ func AsValidationError(err error) (ValidationError, bool) {
 }
 
 type WaitlistService struct {
-	repo   repositories.WaitlistRepository
-	mailer mailer.Sender
+	repo            repositories.WaitlistRepository
+	promocodeRepo   repositories.PromocodeRepository
+	mailer          mailer.Sender
 }
 
 type JoinWaitlistInput struct {
-	Email string `json:"email"`
+	Email     string `json:"email"`
+	Promocode string `json:"promocode,omitempty"`
 }
 
-func NewWaitlistService(repo repositories.WaitlistRepository, sender mailer.Sender) *WaitlistService {
+func NewWaitlistService(repo repositories.WaitlistRepository, promocodeRepo repositories.PromocodeRepository, sender mailer.Sender) *WaitlistService {
 	return &WaitlistService{
-		repo:   repo,
-		mailer: sender,
+		repo:          repo,
+		promocodeRepo: promocodeRepo,
+		mailer:        sender,
 	}
 }
 
 func (s *WaitlistService) Join(ctx context.Context, input JoinWaitlistInput) (*models.WaitlistEntry, error) {
 	if s.mailer == nil {
 		return nil, fmt.Errorf("email sender not configured")
+	}
+
+	// Validate promocode if provided (normalize to uppercase for case-insensitive matching)
+	if input.Promocode != "" {
+		normalizedPromocode := strings.ToUpper(strings.TrimSpace(input.Promocode))
+		_, err := s.promocodeRepo.FindAndDelete(ctx, normalizedPromocode)
+		if err != nil {
+			if errors.Is(err, repositories.ErrPromocodeNotFound) {
+				return nil, newValidationError("invalid promocode")
+			}
+			if errors.Is(err, repositories.ErrPromocodeAlreadyUsed) {
+				return nil, newValidationError("promocode already used")
+			}
+			return nil, fmt.Errorf("validate promocode: %w", err)
+		}
+	} else {
+		return nil, newValidationError("promocode is required")
 	}
 
 	normalizedEmail, err := normalizeGmail(input.Email)
