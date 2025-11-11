@@ -37,11 +37,29 @@ func NewRouter(cfg *config.Config, logger zerolog.Logger, db *sql.DB) (http.Hand
 	}))
 
 	healthHandler := appHandlers.NewHealthHandler()
+	
+	// Repositories
 	userRepo := appRepositories.NewUserRepository(db)
-	userHandler := appHandlers.NewUserHandler(userRepo)
-
+	clientRepo := appRepositories.NewClientRepository(db)
+	invoiceRepo := appRepositories.NewInvoiceRepository(db)
+	expenseRepo := appRepositories.NewExpenseRepository(db)
 	waitlistRepo := appRepositories.NewWaitlistRepository(db)
 	promocodeRepo := appRepositories.NewPromocodeRepository(db)
+
+	// Services
+	authService := appServices.NewAuthService(userRepo)
+	clientService := appServices.NewClientService(clientRepo)
+	invoiceService := appServices.NewInvoiceService(invoiceRepo, clientRepo)
+	expenseService := appServices.NewExpenseService(expenseRepo, clientRepo)
+	reportService := appServices.NewReportService(invoiceRepo, expenseRepo, clientRepo)
+
+	// Handlers
+	authHandler := appHandlers.NewAuthHandler(authService)
+	clientHandler := appHandlers.NewClientHandler(clientService)
+	invoiceHandler := appHandlers.NewInvoiceHandler(invoiceService)
+	expenseHandler := appHandlers.NewExpenseHandler(expenseService)
+	reportHandler := appHandlers.NewReportHandler(reportService)
+	userHandler := appHandlers.NewUserHandler(userRepo)
 
 	if cfg.Email.SMTP.Username == "" || cfg.Email.SMTP.Password == "" {
 		return nil, fmt.Errorf("email smtp credentials missing; set EMAIL_USER and EMAIL_PASSWORD")
@@ -64,16 +82,63 @@ func NewRouter(cfg *config.Config, logger zerolog.Logger, db *sql.DB) (http.Hand
 	promocodeService := appServices.NewPromocodeService(promocodeRepo)
 	promocodeHandler := appHandlers.NewPromocodeHandler(promocodeService, logger)
 
+	// Auth middleware
+	authMiddleware := pkgmiddleware.AuthMiddleware(authService)
+
 	r.Get("/health", healthHandler.Check)
 
 	r.Route("/api/v1", func(r chi.Router) {
+		// Public endpoints
+		r.Post("/auth/register", authHandler.Register)
+		r.Post("/auth/login", authHandler.Login)
+
+		// Legacy endpoints (keep for backward compatibility)
 		r.Route("/users", func(r chi.Router) {
 			r.Get("/", userHandler.List)
 			r.Post("/", userHandler.Create)
 		})
-
 		r.Get("/promocode", promocodeHandler.Generate)
 		r.Post("/waitlist", waitlistHandler.Join)
+
+		// Protected endpoints - require authentication
+		r.Group(func(r chi.Router) {
+			r.Use(authMiddleware)
+
+			// Clients
+			r.Route("/clients", func(r chi.Router) {
+				r.Get("/", clientHandler.List)
+				r.Post("/", clientHandler.Create)
+				r.Get("/{id}", clientHandler.Get)
+				r.Put("/{id}", clientHandler.Update)
+				r.Delete("/{id}", clientHandler.Delete)
+			})
+
+			// Invoices
+			r.Route("/invoices", func(r chi.Router) {
+				r.Get("/", invoiceHandler.List)
+				r.Post("/", invoiceHandler.Create)
+				r.Get("/{id}", invoiceHandler.Get)
+				r.Put("/{id}", invoiceHandler.Update)
+				r.Post("/{id}/send", invoiceHandler.Send)
+				r.Post("/{id}/mark-paid", invoiceHandler.MarkPaid)
+				r.Get("/{id}/pdf", invoiceHandler.GetPDF)
+			})
+
+			// Expenses
+			r.Route("/expenses", func(r chi.Router) {
+				r.Get("/", expenseHandler.List)
+				r.Post("/", expenseHandler.Create)
+				r.Get("/{id}", expenseHandler.Get)
+				r.Put("/{id}", expenseHandler.Update)
+			})
+
+			// Reports
+			r.Route("/reports", func(r chi.Router) {
+				r.Get("/summary", reportHandler.GetSummary)
+				r.Get("/client-profit/{id}", reportHandler.GetClientProfitability)
+				r.Get("/tax-summary", reportHandler.GetTaxSummary)
+			})
+		})
 	})
 
 	return r, nil
