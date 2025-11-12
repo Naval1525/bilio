@@ -205,13 +205,13 @@ const Header = () => {
           {/* Navigation Links - Center */}
           <nav className="hidden md:flex items-center space-x-12 ml-8">
             <Link
-              href="/About"
+              href="/about"
               className="text-lg font-semibold hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
             >
               About
             </Link>
             <Link
-              href="/Contact"
+              href="/contact"
               className="text-lg font-semibold hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
             >
               Contact

@@ -31,12 +31,11 @@ const faqs: FAQ[] = [
 
 interface FAQItemProps {
   faq: FAQ;
-  index: number;
   isOpen: boolean;
   onToggle: () => void;
 }
 
-const FAQItem: React.FC<FAQItemProps> = ({ faq, index, isOpen, onToggle }) => {
+const FAQItem: React.FC<FAQItemProps> = ({ faq, isOpen, onToggle }) => {
   const contentRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState<number>(0);
 
@@ -108,7 +107,6 @@ const FAQ: React.FC = () => {
             <FAQItem
               key={index}
               faq={faq}
-              index={index}
               isOpen={openIndex === index}
               onToggle={() => toggleFAQ(index)}
             />

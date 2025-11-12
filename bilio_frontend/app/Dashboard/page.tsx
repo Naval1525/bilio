@@ -13,7 +13,7 @@ import { useAuth } from "@/hooks/use-auth";
 
 import data from "@/components/AppDashboard/data.json"
 
-const page = () => {
+const Page = () => {
   const router = useRouter();
   const { isAuthenticated, isLoading } = useAuth();
 
@@ -113,4 +113,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
