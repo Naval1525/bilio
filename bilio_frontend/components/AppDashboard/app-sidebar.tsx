@@ -16,10 +16,10 @@ import {
   IconUsers,
 } from "@tabler/icons-react";
 
-import { NavDocuments } from "@/components/Dashboard/nav-documents";
-import { NavMain } from "@/components/Dashboard/nav-main";
-import { NavSecondary } from "@/components/Dashboard/nav-secondary";
-import { NavUser } from "@/components/Dashboard/nav-user";
+import { NavDocuments } from "@/components/AppDashboard/nav-documents";
+import { NavMain } from "@/components/AppDashboard/nav-main";
+import { NavSecondary } from "@/components/AppDashboard/nav-secondary";
+import { NavUser } from "@/components/AppDashboard/nav-user";
 import {
   Sidebar,
   SidebarContent,

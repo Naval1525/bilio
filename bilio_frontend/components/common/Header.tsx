@@ -1,29 +1,14 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Moon, Sun, LogOut } from "lucide-react";
+import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
 import WaitlistModal from "../WaitlistModal";
-import { useAuth } from "@/hooks/use-auth";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const Header = () => {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const pathname = usePathname();
-  const router = useRouter();
-  const { user, logout, isAuthenticated } = useAuth();
-  
-  const isDashboard = pathname === "/Dashboard";
   
   useEffect(() => {
     setMounted(true);
@@ -31,21 +16,6 @@ const Header = () => {
 
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
-  };
-
-  const handleLogout = () => {
-    logout();
-    router.push("/");
-  };
-
-  const getInitials = (name: string | undefined) => {
-    if (!name) return "U";
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
   };
 
   return (
@@ -250,54 +220,12 @@ const Header = () => {
 
           {/* Right Side - Button and Theme Toggle */}
           <div className="flex items-center space-x-4">
-            {isDashboard && isAuthenticated ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button
-                    className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black dark:focus:ring-white"
-                    aria-label="User menu"
-                  >
-                    <Avatar className="w-10 h-10">
-                      <AvatarImage src="" alt={user?.name || "User"} />
-                      <AvatarFallback className="bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-200">
-                        {getInitials(user?.name)}
-                      </AvatarFallback>
-                    </Avatar>
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                  <div className="px-2 py-3">
-                    <div className="flex items-center space-x-3">
-                      <Avatar className="w-10 h-10">
-                        <AvatarImage src="" alt={user?.name || "User"} />
-                        <AvatarFallback className="bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-200">
-                          {getInitials(user?.name)}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex flex-col space-y-0.5">
-                        <span className="text-sm font-semibold leading-none">{user?.name || "User"}</span>
-                        <span className="text-xs text-gray-500 dark:text-gray-400 leading-none">{user?.email || ""}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    onClick={handleLogout}
-                    className="text-red-600 dark:text-red-400 cursor-pointer focus:text-red-600 dark:focus:text-red-400"
-                  >
-                    <LogOut className="mr-2 h-4 w-4" />
-                    <span>Log out</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <button 
-                onClick={() => setIsModalOpen(true)}
-                className="px-6 py-2.5 text-base font-medium text-white bg-black dark:bg-white dark:text-black rounded-md hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
-              >
-                Join Waitlist
-              </button>
-            )}
+            <button 
+              onClick={() => setIsModalOpen(true)}
+              className="px-6 py-2.5 text-base font-medium text-white bg-black dark:bg-white dark:text-black rounded-md hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+            >
+              Join Waitlist
+            </button>
 
             <button
               onClick={toggleTheme}

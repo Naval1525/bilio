@@ -1,14 +1,16 @@
 "use client"
 
-import { useCallback, useMemo } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 
 import {
   IconCreditCard,
   IconDotsVertical,
   IconLogout,
-  IconNotification,
+  IconMoon,
+  IconSun,
   IconUserCircle,
 } from "@tabler/icons-react"
+import { useTheme } from "next-themes"
 
 import {
   Avatar,
@@ -43,6 +45,8 @@ export function NavUser({
   onLogout?: () => void | Promise<void>
 }) {
   const { isMobile } = useSidebar()
+  const { theme, resolvedTheme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
 
   const initials = useMemo(() => {
     const source = (user.name || user.email || "").trim()
@@ -54,10 +58,22 @@ export function NavUser({
     return combined || (first || last || "U").toUpperCase()
   }, [user.email, user.name])
 
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  const activeTheme = theme === "system" ? resolvedTheme : theme
+  const isDarkMode = activeTheme === "dark"
+
   const handleLogout = useCallback(() => {
     if (!onLogout) return
     return Promise.resolve(onLogout())
   }, [onLogout])
+
+  const handleThemeToggle = useCallback(() => {
+    if (!mounted) return
+    setTheme(isDarkMode ? "light" : "dark")
+  }, [isDarkMode, mounted, setTheme])
 
   return (
     <SidebarMenu>
@@ -115,9 +131,9 @@ export function NavUser({
                 <IconCreditCard />
                 Billing
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <IconNotification />
-                Notifications
+              <DropdownMenuItem onSelect={handleThemeToggle}>
+                {isDarkMode ? <IconSun /> : <IconMoon />}
+                {isDarkMode ? "Light mode" : "Dark mode"}
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
