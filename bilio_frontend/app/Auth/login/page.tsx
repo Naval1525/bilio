@@ -27,7 +27,7 @@ export default function Page() {
       <LoginFormWrapper />
       <p className="mt-4 text-center text-sm text-muted-foreground">
         Don&apos;t have an account?{' '}
-        <Link href="/Auth/signup" className="text-primary underline-offset-4 hover:underline">
+        <Link href="/auth/signup" className="text-primary underline-offset-4 hover:underline">
           Create one
         </Link>
       </p>

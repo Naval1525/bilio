@@ -178,8 +178,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   const handleLogout = React.useCallback(() => {
     logout();
-    router.replace("/");
-  }, [logout, router]);
+    window.location.href = "/";
+  }, [logout]);
 
   return (
     <Sidebar collapsible="offcanvas" {...props}>
@@ -385,7 +385,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={sidebarConfig.navMain} />
+        <NavMain 
+          items={sidebarConfig.navMain} 
+          workspaceName={user?.workspace_name || undefined}
+        />
         <NavDocuments items={sidebarConfig.documents} />
         <NavSecondary items={sidebarConfig.navSecondary} className="mt-auto" />
       </SidebarContent>

@@ -44,7 +44,7 @@ export default function SignupForm() {
       await register(form)
       toast.success('Account created')
       const callback = searchParams.get('callback')
-      router.push(callback || '/Dashboard')
+      router.push(callback || '/dashboard')
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Sign up failed'
       toast.error(message)

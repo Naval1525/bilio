@@ -18,20 +18,24 @@ const Page = () => {
   const { isAuthenticated, isLoading } = useAuth();
 
   useEffect(() => {
-    document.body.classList.add("dashboard-page");
-
-    return () => {
-      document.body.classList.remove("dashboard-page");
-    };
-  }, []);
-
-  useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      router.replace("/Auth/login?callback=%2FDashboard");
+      router.replace("/auth/login?callback=/dashboard");
     }
   }, [isAuthenticated, isLoading, router]);
 
-  if (isLoading || !isAuthenticated) {
+  // Show loading state while checking authentication
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+          <p className="text-sm text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
     return null;
   }
 

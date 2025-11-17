@@ -13,12 +13,14 @@ import {
 
 export function NavMain({
   items,
+  workspaceName,
 }: {
   items: {
     title: string
     url: string
     icon?: Icon
   }[]
+  workspaceName?: string
 }) {
   return (
     <SidebarGroup>
@@ -26,11 +28,11 @@ export function NavMain({
         <SidebarMenu>
           <SidebarMenuItem className="flex items-center gap-2">
             <SidebarMenuButton
-              tooltip="Quick Create"
+              tooltip={workspaceName || "Workspace"}
               className="bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground min-w-8 duration-200 ease-linear"
             >
               <IconCirclePlusFilled />
-              <span>Quick Create</span>
+              <span>{workspaceName || "Workspace"}</span>
             </SidebarMenuButton>
             <Button
               size="icon"
@@ -45,7 +47,10 @@ export function NavMain({
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton tooltip={item.title}>
+              <SidebarMenuButton 
+                tooltip={item.title}
+                isActive={item.title === "Dashboard"}
+              >
                 {item.icon && <item.icon />}
                 <span>{item.title}</span>
               </SidebarMenuButton>

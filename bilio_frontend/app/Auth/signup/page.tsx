@@ -29,7 +29,7 @@ export default function Page() {
       <SignupFormWrapper />
       <p className="mt-4 text-center text-sm text-muted-foreground">
         Already have an account?{' '}
-        <Link href="/Auth/login" className="text-primary underline-offset-4 hover:underline">
+        <Link href="/auth/login" className="text-primary underline-offset-4 hover:underline">
           Sign in
         </Link>
       </p>

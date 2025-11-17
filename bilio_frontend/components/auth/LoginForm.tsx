@@ -37,7 +37,7 @@ export default function LoginForm() {
       await login(form.email, form.password)
       toast.success('Logged in successfully')
       const callback = searchParams.get('callback')
-      router.push(callback || '/Dashboard')
+      router.push(callback || '/dashboard')
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Login failed'
       toast.error(message)
