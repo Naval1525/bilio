@@ -1,6 +1,7 @@
 "use client";
 
 import React, { FormEvent, useState, useEffect } from "react";
+import { CheckCircle2, XCircle } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -29,8 +30,6 @@ const WaitlistModal = ({ open, onOpenChange }: WaitlistModalProps) => {
   const [email, setEmail] = useState("");
   const [promocode, setPromocode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [promocodeError, setPromocodeError] = useState<string | null>(null);
 
   // Reset state when dialog opens or closes
   useEffect(() => {
@@ -38,8 +37,6 @@ const WaitlistModal = ({ open, onOpenChange }: WaitlistModalProps) => {
       setEmail("");
       setPromocode("");
       setIsLoading(false);
-      setErrorMessage(null);
-      setPromocodeError(null);
     }
   }, [open]);
 
@@ -47,28 +44,28 @@ const WaitlistModal = ({ open, onOpenChange }: WaitlistModalProps) => {
     event.preventDefault();
 
     if (!isValidEmail(email)) {
-      setErrorMessage("Please enter a valid email address.");
-      setPromocodeError(null);
+      toast.error("Please enter a valid email address.", {
+        icon: <XCircle className="text-red-500" />,
+      });
       return;
     }
 
     if (!promocode.trim()) {
-      setErrorMessage("Promocode is required.");
-      setPromocodeError(null);
+      toast.error("Promocode is required.", {
+        icon: <XCircle className="text-red-500" />,
+      });
       return;
     }
 
     setIsLoading(true);
-    setErrorMessage(null);
-    setPromocodeError(null);
 
     try {
       const response = await joinWaitlist(email.trim(), promocode.trim());
       setEmail("");
       setPromocode("");
       // Show toast and close modal simultaneously
-      toast.success("Welcome email sent!", {
-        description: response.message ?? "Thanks for joining the waitlist!",
+      toast.success("Thanks for joining the waitlist!", {
+        icon: <CheckCircle2 className="text-green-500" />,
       });
       // Use requestAnimationFrame to ensure toast renders before closing.
       requestAnimationFrame(() => {
@@ -79,19 +76,23 @@ const WaitlistModal = ({ open, onOpenChange }: WaitlistModalProps) => {
         error instanceof Error
           ? error.message
           : "Something went wrong. Please try again.";
-      
+
       // Check if error is related to promocode
       const lowerMessage = message.toLowerCase();
-      if (lowerMessage.includes("promocode") || 
-          lowerMessage.includes("invalid promocode") || 
-          lowerMessage.includes("promocode already used") ||
-          lowerMessage.includes("already used")) {
-        setPromocodeError(message);
+      if (
+        lowerMessage.includes("promocode") ||
+        lowerMessage.includes("invalid promocode") ||
+        lowerMessage.includes("promocode already used") ||
+        lowerMessage.includes("already used")
+      ) {
+        toast.error(message, {
+          icon: <XCircle className="text-red-500" />,
+        });
         setPromocode(""); // Clear the promocode field
-        setErrorMessage(null);
       } else {
-        setErrorMessage(message);
-        setPromocodeError(null);
+        toast.error(message, {
+          icon: <XCircle className="text-red-500" />,
+        });
       }
     } finally {
       setIsLoading(false);
@@ -111,7 +112,7 @@ const WaitlistModal = ({ open, onOpenChange }: WaitlistModalProps) => {
             Enter your email and promocode for early access.
           </DialogDescription>
         </DialogHeader>
-  
+
         <form onSubmit={handleSubmit} className="space-y-5 pt-2">
           <div className="space-y-2">
             <Label htmlFor="email" className="text-sm font-medium">
@@ -128,17 +129,12 @@ const WaitlistModal = ({ open, onOpenChange }: WaitlistModalProps) => {
               required
             />
           </div>
-  
+
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <Label htmlFor="promocode" className="text-sm font-medium">
                 Promocode
               </Label>
-              {promocodeError && (
-                <span className="text-sm text-red-500 dark:text-red-400">
-                  {promocodeError}
-                </span>
-              )}
             </div>
             <Input
               id="promocode"
@@ -147,24 +143,13 @@ const WaitlistModal = ({ open, onOpenChange }: WaitlistModalProps) => {
               value={promocode}
               onChange={(e) => {
                 setPromocode(e.target.value);
-                // Clear error when user starts typing
-                if (promocodeError) {
-                  setPromocodeError(null);
-                }
               }}
               disabled={isLoading}
               className="h-11"
-              aria-invalid={promocodeError ? "true" : undefined}
               required
             />
           </div>
-  
-          {errorMessage && (
-            <p className="text-sm text-red-500 dark:text-red-400 py-1">
-              {errorMessage}
-            </p>
-          )}
-  
+
           <Button
             type="submit"
             className="w-full h-11"
@@ -173,7 +158,7 @@ const WaitlistModal = ({ open, onOpenChange }: WaitlistModalProps) => {
             {isLoading ? "Joining..." : "Join Waitlist"}
           </Button>
         </form>
-  
+
         <div className="pt-6 mt-6 border-t space-y-4">
           <p className="text-sm text-muted-foreground text-center">
             {`Don't have a promo code?`}
