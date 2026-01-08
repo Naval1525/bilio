@@ -8,6 +8,7 @@ interface FAQ {
   answer: string;
 }
 
+
 const faqs: FAQ[] = [
   {
     question: "Can invoices be edited after payment?",
