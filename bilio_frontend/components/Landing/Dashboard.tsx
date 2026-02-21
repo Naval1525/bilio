@@ -15,6 +15,7 @@ export default function Dashboard() {
     <>
       <style dangerouslySetInnerHTML={{__html: `
         .mac-window-content {
+        
           position: relative;
           transform: translateZ(0);
           isolation: isolate;
