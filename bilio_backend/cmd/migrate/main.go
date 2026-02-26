@@ -9,7 +9,6 @@ import (
 	"sort"
 
 	"github.com/joho/godotenv"
-
 	"github.com/nava1525/bilio-backend/internal/config"
 	"github.com/nava1525/bilio-backend/internal/database"
 )
