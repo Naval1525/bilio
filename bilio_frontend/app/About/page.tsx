@@ -12,6 +12,7 @@ const whyBilio = [
   'Tax-ready exports without the end-of-quarter scramble.',
 ]
 
+
 const productHighlights = [
   {
     title: 'Invoicing',
