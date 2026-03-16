@@ -13,6 +13,7 @@ import (
 	"github.com/nava1525/bilio-backend/internal/database"
 )
 
+
 func main() {
 	_ = godotenv.Load(".env")
 	_ = godotenv.Load("../.env")
